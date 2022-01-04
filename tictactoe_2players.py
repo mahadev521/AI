@@ -1,3 +1,4 @@
+'''general method of playing tictactoe by 2 players'''
 import numpy as np
 x,c=[' ']*9,0
 def win(x):
