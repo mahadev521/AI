@@ -28,10 +28,8 @@ def display():
 
 while True:
     i=int(input('player 1\'s turn(\'X\'): '))-1
-    while x[i]!=' ':
-        i=i=int(input('position occupied! enter another position number: '))-1
-    x[i]='X'
-    c+=1
+    while x[i]!=' ': i=i=int(input('position occupied! enter another position number: '))-1
+    x[i],c='X',c+1
     display()
     if c>4 and win(x):
         print(win(x))
@@ -39,11 +37,9 @@ while True:
     if c==9:
         print('It\'s a Tie')
         break
-    i=int(input('player 2\'s turn(\'X\'): '))-1
-    while x[i]!=' ':
-        i=i=int(input('position occupied! enter another position number: '))-1
-    x[i]='O'
-    c+=1
+    i=int(input('player 2\'s turn(\'O\'): '))-1
+    while x[i]!=' ': i=i=int(input('position occupied! enter another position number: '))-1
+    x[i],c='O',c+1
     display()
     if c>4 and win(x):
         print(win(x))
