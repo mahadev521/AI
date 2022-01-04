@@ -1,3 +1,4 @@
+'''playing tictactoe with AI'''
 import numpy as np
 x, v, c = [' ']*9, list(range(9)), 0
 pos = {1: [(2, 3), (5, 9), (4, 7)], 2: [(1, 3), (5, 8)], 3: [(2, 1), (5, 7), (6, 9)], 4: [(1, 7), (5, 6)], 5: [
