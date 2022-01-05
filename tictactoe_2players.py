@@ -3,6 +3,20 @@ import numpy as np
 gc=0 #gamecount
 def game(gc):
     x,c=[' ']*9,0
+    
+    def p1(): #player1 function
+        i=int(input('player 1\'s turn: '))-1
+        while x[i]!=' ': i=i=int(input('position occupied! enter another position number: '))-1
+        x[i]='X' if gc%2==0 else 'O'
+
+    def p2(): #player2 function
+        i=int(input('player 2\'s turn: '))-1
+        while x[i]!=' ': i=i=int(input('position occupied! enter another position number: '))-1
+        x[i]='O' if gc%2==0 else 'X'
+        
+    def display(): #for displaying the board
+        for i in range(0,9,3): print(x[i:i+3])
+    
     def win(x): #checking for winning
         x=np.resize(np.array(x),(3,3))
         for i in range(3):
@@ -30,19 +44,6 @@ def game(gc):
         else:
             x='player 1' if win(x)=='player 2' else 'player 2'
             print(x,'won')
-            
-    def display(): #for displaying the board
-        for i in range(0,9,3): print(x[i:i+3])
-
-    def p1(): #player1 function
-        i=int(input('player 1\'s turn: '))-1
-        while x[i]!=' ': i=i=int(input('position occupied! enter another position number: '))-1
-        x[i]='X' if gc%2==0 else 'O'
-
-    def p2(): #player2 function
-        i=int(input('player 2\'s turn: '))-1
-        while x[i]!=' ': i=i=int(input('position occupied! enter another position number: '))-1
-        x[i]='O' if gc%2==0 else 'X'
     
     display() #displaying the board in initial
     while True:
