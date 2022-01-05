@@ -56,7 +56,8 @@ def game(gc):
                 else: x[0][2]='O'
                 return 
         print('5')
-        l=np.argwhere(x==' ')[0]
+        l=np.argwhere(x==' ')
+        l=l[np.random.randint(0,len(l))]
         x[l[0]][l[1]]='O'
         return 
         
@@ -83,7 +84,9 @@ def game(gc):
         display()
         if c > 4 and win(x): break
     if c!=9: print(f'{win(x)} won') #printing the winner
-    else: print('It\'s a tie ')
+    else: 
+        if win(x): print(f'{win(x)} won')
+        else: print('It\'s a tie ')
     ch=input('want to play again(y/n)?')
     if ch=='y' or ch=='Y':
         gc+=1
