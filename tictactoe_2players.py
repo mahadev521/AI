@@ -4,15 +4,11 @@ gc=0 #gamecount
 def game(gc):
     x,c=[' ']*9,0
     
-    def p1(): #player1 function
-        i=int(input('player 1\'s turn: '))-1
+    def p(c): #player's function
+        i=int(input(f'player {c}\'s turn: '))-1
         while x[i]!=' ': i=i=int(input('position occupied! enter another position number: '))-1
-        x[i]='X' if gc%2==0 else 'O'
-
-    def p2(): #player2 function
-        i=int(input('player 2\'s turn: '))-1
-        while x[i]!=' ': i=i=int(input('position occupied! enter another position number: '))-1
-        x[i]='O' if gc%2==0 else 'X'
+        if c==1:x[i]='X' if gc%2==0 else 'O'
+        else:  x[i]='O' if gc%2==0 else 'X'
         
     def display(): #for displaying the board
         for i in range(0,9,3): print(x[i:i+3])
@@ -40,21 +36,21 @@ def game(gc):
         return ''
 
     def won(x): #for printing who is the winner
-        if gc%2==0: print(win(x),' won')
+        if gc%2==0: print(f'{win(x)} won')
         else:
             x='player 1' if win(x)=='player 2' else 'player 2'
-            print(x,'won')
+            print(f'{x} won')
     
     display() #displaying the board in initial
     while True:
-        p1() if gc%2==0 else p2() #roles will be reversed in next game
+        p(1) if gc%2==0 else p(2) #roles will be reversed in next game
         c+=1
         display()
         if c>4 and win(x): break 
         if c==9:
             print('It\'s a Tie')
             break
-        p2() if gc%2==0 else p1()
+        p(2) if gc%2==0 else p(1)
         c+=1
         display()
         if c>4 and win(x): break
