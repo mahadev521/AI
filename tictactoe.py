@@ -1,67 +1,8 @@
-import numpy as np
+import numpy as np 
 gc=0
 def game(gc):
-    x,a,c = [' ']*9,[], 0
-    pos = {1: [(2, 3), (5, 9), (4, 7)], 
-           2: [(1, 3), (5, 8)], 
-           3: [(2, 1), (5, 7), (6, 9)], 
-           4: [(1, 7), (5, 6)], 
-           5: [(1, 9), (2, 8), (3, 7)], 
-           6: [(3, 9), (5, 4)], 
-           7: [(4, 1), (5, 3), (8, 9)], 
-           8: [(7, 9), (5, 2)], 
-           9: [(6, 3), (5, 1), (8, 7)]}
-    
-    def display(): #displaying the board
-        for i in range(0, 9, 3): print(x[i:i+3])
-    
-    def player(): #player playing...
-        i = int(input('enter position(1-9): '))
-        while x[i-1] != ' ': i=int(input('position occupied! enter another position number(1-9): '))
-        x[i-1] = 'X'
-        return i
-            
-    def AI(x, i): #Ai playing...
-        print('after AI turn...')
-        if i != 5 and x[4] == ' ': 
-            x[4] = 'O'
-            a.append(4)
-        else:
-            for j in pos[i]:  # checking connected blocks of player and blocking his next move
-                if x[i-1] == x[j[0]-1]:
-                    if x[j[1]-1] == ' ':
-                        x[j[1]-1] = 'O'
-                        a.append(j[1]-1)
-                        return x
-                elif x[i-1] == x[j[1]-1]:
-                    if x[j[0]-1] == ' ':
-                        x[j[0]-1] = 'O'
-                        a.append(j[0]-1)
-                        return x
-
-            for k in a:
-                for j in pos[k]:  # filling connected empty blocks, chance of ai winning
-                    if x[i-1] == x[j[0]-1]:
-                        if x[j[1]-1] == ' ':
-                            x[j[1]-1] = 'O'
-                            a.append(j[1]-1)
-                            return x
-                    elif x[i-1] == x[j[1]-1]:
-                        if x[j[0]-1] == ' ':
-                            x[j[0]-1] = 'O'
-                            a.append(j[0]-1)
-                            return x
-
-            for j in pos[i]:  # filling non connected empty blocks
-                    if x[j[0]-1] == ' ':
-                        x[j[0]-1] = 'O'
-                        return x
-                    elif x[j[1]-1] == ' ':
-                        x[j[1]-1] = 'O'
-                        return x
-
+    x,c=np.full((3,3),' '),0
     def win(y): #checking for winner
-        y = np.resize(np.array(y), (3, 3))
         for i in range(3):
             j = list(set(y[:, i]))  # checking vertically
             if len(j) == 1 and j[0] != ' ':
@@ -82,18 +23,66 @@ def game(gc):
                 else:return 'AI'
         return ''
 
+    def AI():
+        print('after AI turn...')
+        if (gc%2!=0 and np.count_nonzero(x==' ')==9):
+            x[1][1]='O'
+            return 
+        if x[1][1]==' ':
+            x[1][1]='O'
+            return 
+        for j in ('O','X'):
+            for i in range(3):
+                if np.count_nonzero(x[:,i] == j)==2 and np.count_nonzero(x[:,i]==' ')==1:
+                    pos=np.where(x[:,i]==' ')[0][0]
+                    x[pos][i]='O'
+                    print('1')
+                    return 
+                if np.count_nonzero(x[i,:] == j)==2 and np.count_nonzero(x[i,:]==' ')==1:
+                    pos=np.where(x[i,:]==' ')[0][0]
+                    x[i][pos]='O'
+                    print('2')
+                    return 
+            if np.count_nonzero(np.diag(x)==j)==2 and np.count_nonzero(np.diag(x)==' ')==1:
+                pos=np.where(np.diag(x)==' ')[0][0]
+                x[pos][pos]='O'
+                print('3')
+                return 
+            if np.count_nonzero(np.diag(x[::-1])==j)==2 and np.count_nonzero(np.diag(x[::-1])==' ')==1:
+                pos=np.where(np.diag(x[::-1])==' ')[0][0]
+                print('4')
+                if pos==0: x[2][0]='O'
+                elif pos==1: x[1][1]='O'
+                else: x[0][2]='O'
+                return 
+        print('5')
+        l=np.argwhere(x==' ')[0]
+        x[l[0]][l[1]]='O'
+        return 
+        
+    def player(): #player playing...
+        i = int(input('enter position(1-9): '))
+        while x[(i-1)//3][(i-1)%3] != ' ': i=int(input('position occupied! enter another position number(1-9): '))
+        x[(i-1)//3][(i-1)%3] = 'X'
+        
+    def display():
+        for i in x: print(i)
+
     display()
+    i=1
     while True:
-        i=player() if gc%2==0 else AI(x,1)  
+        if gc%2==0:player() 
+        else: AI()  
         c += 1
         display()
         if c > 4 and win(x): break
         if c == 9: break
-        AI(x, i) if gc%2==0 else player()
+        if gc%2==0: AI() 
+        else:player()
         c += 1
         display()
         if c > 4 and win(x): break
-    if c!=9: print(win(x)) #printing the winner
+    if c!=9: print(f'{win(x)} won') #printing the winner
     else: print('It\'s a tie ')
     ch=input('want to play again(y/n)?')
     if ch=='y' or ch=='Y':
