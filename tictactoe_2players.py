@@ -1,14 +1,12 @@
-'''a python program to play tictactoe between 2 players'''
+'''a python program to play tictactoe between 2 players (infinite times if they choose to)'''
 import numpy as np
 gc=0 #gamecount
 def game(gc):
     x,c=[' ']*9,0
-    
     def p(c): #player's function
         i=int(input(f'player {c}\'s turn: '))-1 #c variable is not global c. here c is used to determine which player is playing
         while x[i]!=' ': i=i=int(input('position occupied! enter another position number: '))-1
-        if c==1:x[i]='X' if gc%2==0 else 'O'
-        else:  x[i]='O' if gc%2==0 else 'X'
+        x[i]='O' if c%2==0 else 'X'
         
     def display(): #for displaying the board
         for i in range(0,9,3): print(x[i:i+3])
@@ -34,12 +32,6 @@ def game(gc):
                 if j[0]=='X': return 'player 1'
                 else: return 'player 2'
         return ''
-
-    def won(x): #for printing who is the winner
-        if gc%2==0: print(f'{win(x)} won')
-        else:
-            x='player 1' if win(x)=='player 2' else 'player 2'
-            print(f'{x} won')
     
     display() #displaying the board in initial
     while True:
@@ -47,14 +39,13 @@ def game(gc):
         c+=1
         display()
         if c>4 and win(x): break 
-        if c==9:
-            print('It\'s a Tie')
-            break
+        if c==9: break #checking the Tie condition
         p(2) if gc%2==0 else p(1)
         c+=1
         display()
         if c>4 and win(x): break
-    if c!=9: won(x) #to print who is the winner
+    if c!=9: print(f'{win(x)} won') #to print who is the winner
+    else: print('It\'s a Tie')
     ch=input('want to play again(y/n)? ')
     if ch=='y' or ch=='Y':
         gc+=1
