@@ -5,7 +5,7 @@ def game(gc):
     x,c=[' ']*9,0
     
     def p(c): #player's function
-        i=int(input(f'player {c}\'s turn: '))-1
+        i=int(input(f'player {c}\'s turn: '))-1 #c variable is not global c. here c is used to determine which player is playing
         while x[i]!=' ': i=i=int(input('position occupied! enter another position number: '))-1
         if c==1:x[i]='X' if gc%2==0 else 'O'
         else:  x[i]='O' if gc%2==0 else 'X'
