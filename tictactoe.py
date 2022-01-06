@@ -1,4 +1,4 @@
-'''playing with AI'''
+'''using AI'''
 import numpy as np 
 gc=0
 def game(gc):
@@ -47,7 +47,14 @@ def game(gc):
                 pos=np.where(np.diag(x[::-1])==' ')[0][0]
                 x[2-pos][pos]='O'
                 return 
-
+        if np.count_nonzero(np.diag(x)==j)==1 and np.count_nonzero(np.diag(x)==' ')==2:
+            pos=np.where(np.diag(x)==' ')[0][0]
+            x[pos][pos]='O'
+            return 
+        if np.count_nonzero(np.diag(x[::-1])==j)==1 and np.count_nonzero(np.diag(x[::-1])==' ')==2:
+            pos=np.where(np.diag(x[::-1])==' ')[0][0]
+            x[2-pos][pos]='O'
+            return 
         for i in range(3): #2 blank spaces case
             if np.count_nonzero(x[:,i] == 'X')==1 and np.count_nonzero(x[:,i]==' ')==2:
                 pos=np.where(x[:,i]==' ')[0][0]
