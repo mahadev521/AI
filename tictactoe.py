@@ -28,7 +28,7 @@ def game(gc):
         if (gc%2!=0 and np.count_nonzero(x==' ')==9) or x[1][1]==' ':
             x[1][1]='O'
             return 
-        for j in ('O','X'):
+        for j in ('O','X'): #checking posibility for Ai to win else blocking player possibility to win
             for i in range(3):
                 if np.count_nonzero(x[:,i] == j)==2 and np.count_nonzero(x[:,i]==' ')==1:
                     pos=np.where(x[:,i]==' ')[0][0]
@@ -46,10 +46,16 @@ def game(gc):
                 pos=np.where(np.diag(x[::-1])==' ')[0][0]
                 x[2-pos][pos]='O'
                 return 
-        l=np.argwhere(x==' ')
-        l=l[np.random.randint(0,len(l))]
-        x[l[0]][l[1]]='O'
-        return 
+
+        for i in range(3): #2 blank spaces case
+            if np.count_nonzero(x[:,i] == 'X')==1 and np.count_nonzero(x[:,i]==' ')==2:
+                pos=np.where(x[:,i]==' ')[0][0]
+                x[pos][i]='O'
+                return 
+            if np.count_nonzero(x[i,:] == 'X')==1 and np.count_nonzero(x[i,:]==' ')==2:
+                pos=np.where(x[i,:]==' ')[0][0]
+                x[i][pos]='O'
+                return
         
     def player(): #player playing...
         i = int(input('enter position(1-9): '))
