@@ -86,9 +86,7 @@ def game(gc):
         display()
         if c > 4 and win(x): break
     if c!=9: print(f'{win(x)} won') #printing the winner
-    else: 
-        if win(x): print(f'{win(x)} won')
-        else: print('It\'s a tie ')
+    else: print('It\'s a tie ')
     ch=input('want to play again(y/n)?')
     if ch=='y' or ch=='Y':
         gc+=1
