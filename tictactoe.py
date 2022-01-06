@@ -13,15 +13,14 @@ def game(gc):
             if len(j) == 1 and j[0] != ' ':
                 if j[0] == 'X': return 'player'
                 else: return 'AI'
-        else:
-            j = list(set(np.diag(y[::-1])))  # checking regular diagonal
-            if len(j) == 1 and j[0] != ' ':
-                if j[0] == 'X': return 'player'
-                else: return 'AI'
-            j = list(set(np.diag(y)))  # checking reverse diagonal
-            if len(j) == 1 and j[0] != ' ':
-                if j[0] == 'X':return 'player'
-                else:return 'AI'
+        j = list(set(np.diag(y[::-1])))  # checking regular diagonal
+        if len(j) == 1 and j[0] != ' ':
+            if j[0] == 'X': return 'player'
+            else: return 'AI'
+        j = list(set(np.diag(y)))  # checking reverse diagonal
+        if len(j) == 1 and j[0] != ' ':
+            if j[0] == 'X':return 'player'
+            else:return 'AI'
         return ''
 
     def AI():
