@@ -1,3 +1,4 @@
+'''playing with AI'''
 import numpy as np 
 gc=0
 def game(gc):
