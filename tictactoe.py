@@ -25,10 +25,7 @@ def game(gc):
 
     def AI():
         print('after AI turn...')
-        if (gc%2!=0 and np.count_nonzero(x==' ')==9):
-            x[1][1]='O'
-            return 
-        if x[1][1]==' ':
+        if (gc%2!=0 and np.count_nonzero(x==' ')==9) or x[1][1]==' ':
             x[1][1]='O'
             return 
         for j in ('O','X'):
@@ -36,26 +33,19 @@ def game(gc):
                 if np.count_nonzero(x[:,i] == j)==2 and np.count_nonzero(x[:,i]==' ')==1:
                     pos=np.where(x[:,i]==' ')[0][0]
                     x[pos][i]='O'
-                    print('1')
                     return 
                 if np.count_nonzero(x[i,:] == j)==2 and np.count_nonzero(x[i,:]==' ')==1:
                     pos=np.where(x[i,:]==' ')[0][0]
                     x[i][pos]='O'
-                    print('2')
                     return 
             if np.count_nonzero(np.diag(x)==j)==2 and np.count_nonzero(np.diag(x)==' ')==1:
                 pos=np.where(np.diag(x)==' ')[0][0]
                 x[pos][pos]='O'
-                print('3')
                 return 
             if np.count_nonzero(np.diag(x[::-1])==j)==2 and np.count_nonzero(np.diag(x[::-1])==' ')==1:
                 pos=np.where(np.diag(x[::-1])==' ')[0][0]
-                print('4')
-                if pos==0: x[2][0]='O'
-                elif pos==1: x[1][1]='O'
-                else: x[0][2]='O'
+                x[2-pos][pos]='O'
                 return 
-        print('5')
         l=np.argwhere(x==' ')
         l=l[np.random.randint(0,len(l))]
         x[l[0]][l[1]]='O'
@@ -72,14 +62,12 @@ def game(gc):
     display()
     i=1
     while True:
-        if gc%2==0:player() 
-        else: AI()  
+        player() if gc%2==0 else AI()  
         c += 1
         display()
         if c > 4 and win(x): break
         if c == 9: break
-        if gc%2==0: AI() 
-        else:player()
+        AI() if gc%2==0 else player()
         c += 1
         display()
         if c > 4 and win(x): break
