@@ -1,56 +1,45 @@
-'''using AI'''
+'''using AI (approach 2)'''
 import numpy as np 
 gc=0
 def game(gc):
     x,c=np.full((3,3),' '),0
     def win(y): #checking for winner
         for i in range(3):
-            j = list(set(y[:, i]))  # checking vertically
-            if len(j) == 1 and j[0] != ' ':
-                if j[0] == 'X': return 'player'
-                else: return 'AI'
-            j = list(set(y[i, :]))  # checking horizontally
-            if len(j) == 1 and j[0] != ' ':
-                if j[0] == 'X': return 'player'
-                else: return 'AI'
-        j = list(set(np.diag(y[::-1])))  # checking regular diagonal
-        if len(j) == 1 and j[0] != ' ':
-            if j[0] == 'X': return 'player'
-            else: return 'AI'
-        j = list(set(np.diag(y)))  # checking reverse diagonal
-        if len(j) == 1 and j[0] != ' ':
-            if j[0] == 'X':return 'player'
-            else:return 'AI'
+            if "".join(y[:,i])=='XXX' or "".join(y[i,:])=='XXX': return 'player'
+            elif "".join(y[:,i])=='OOO' or "".join(y[i,:])=='OOO': return 'AI'
+        if "".join(np.diag(y[::-1]))=='XXX' or "".join(np.diag(y))=='XXX': return 'player'
+        elif "".join(np.diag(y[::-1]))=='OOO' or "".join(np.diag(y))=='OOO': return 'AI'
         return ''
-
+ 
     def AI():
         print('after AI turn...')
-        if (gc%2!=0 and np.count_nonzero(x==' ')==9) or x[1][1]==' ':
+        if  x[1][1]==' ':
             x[1][1]='O'
-            return 
-        for j in ('O','X'): #checking posibility for Ai to win else blocking player possibility to win
-            for i in range(3):
-                if np.count_nonzero(x[:,i] == j)==2 and np.count_nonzero(x[:,i]==' ')==1:
-                    pos=np.where(x[:,i]==' ')[0][0]
-                    x[pos][i]='O'
+            return
+        if c>2:
+            for j in ('O','X'): #checking posibility for Ai to win else blocking player possibility to win
+                for i in range(3):
+                    if np.count_nonzero(x[:,i] == j)==2 and np.count_nonzero(x[:,i]==' ')==1:
+                        pos=np.where(x[:,i]==' ')[0][0]
+                        x[pos][i]='O'
+                        return 
+                    if np.count_nonzero(x[i,:] == j)==2 and np.count_nonzero(x[i,:]==' ')==1:
+                        pos=np.where(x[i,:]==' ')[0][0]
+                        x[i][pos]='O'
+                        return 
+                if np.count_nonzero(np.diag(x)==j)==2 and np.count_nonzero(np.diag(x)==' ')==1:
+                    pos=np.where(np.diag(x)==' ')[0][0]
+                    x[pos][pos]='O'
                     return 
-                if np.count_nonzero(x[i,:] == j)==2 and np.count_nonzero(x[i,:]==' ')==1:
-                    pos=np.where(x[i,:]==' ')[0][0]
-                    x[i][pos]='O'
+                if np.count_nonzero(np.diag(x[::-1])==j)==2 and np.count_nonzero(np.diag(x[::-1])==' ')==1:
+                    pos=np.where(np.diag(x[::-1])==' ')[0][0]
+                    x[2-pos][pos]='O'
                     return 
-            if np.count_nonzero(np.diag(x)==j)==2 and np.count_nonzero(np.diag(x)==' ')==1:
-                pos=np.where(np.diag(x)==' ')[0][0]
-                x[pos][pos]='O'
-                return 
-            if np.count_nonzero(np.diag(x[::-1])==j)==2 and np.count_nonzero(np.diag(x[::-1])==' ')==1:
-                pos=np.where(np.diag(x[::-1])==' ')[0][0]
-                x[2-pos][pos]='O'
-                return 
-        if np.count_nonzero(np.diag(x)==j)==1 and np.count_nonzero(np.diag(x)==' ')==2:
+        if np.count_nonzero(np.diag(x)=='X')==1 and np.count_nonzero(np.diag(x)==' ')==2:
             pos=np.where(np.diag(x)==' ')[0][0]
             x[pos][pos]='O'
             return 
-        if np.count_nonzero(np.diag(x[::-1])==j)==1 and np.count_nonzero(np.diag(x[::-1])==' ')==2:
+        if np.count_nonzero(np.diag(x[::-1])=='X')==1 and np.count_nonzero(np.diag(x[::-1])==' ')==2:
             pos=np.where(np.diag(x[::-1])==' ')[0][0]
             x[2-pos][pos]='O'
             return 
@@ -63,6 +52,8 @@ def game(gc):
                 pos=np.where(x[i,:]==' ')[0][0]
                 x[i][pos]='O'
                 return
+        i,j=np.argwhere(x==' ')[0]
+        x[i][j]='O'
         
     def player(): #player playing...
         i = int(input('enter position(1-9): '))
@@ -90,4 +81,5 @@ def game(gc):
     if ch=='y' or ch=='Y':
         gc+=1
         game(gc)
-game(gc)
+if __name__=='__main__':
+    game(gc)
