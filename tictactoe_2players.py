@@ -11,7 +11,7 @@ def game(gc):
     def display(): #for displaying the board
         for i in range(0,9,3): print(x[i:i+3])
     
-    def win(x): #checking for winning
+    def win(x): #checking for winner
         x=np.resize(np.array(x),(3,3))
         for i in range(3):
                 j=list(set(x[:,i])) #checking vertically
