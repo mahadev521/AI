@@ -1,4 +1,3 @@
-'''a python program to play tictactoe between 2 players (infinite times if they choose to)'''
 import numpy as np
 gc=0 #gamecount
 def game(gc):
@@ -12,25 +11,12 @@ def game(gc):
         for i in range(0,9,3): print(x[i:i+3])
     
     def win(x): #checking for winner
-        x=np.resize(np.array(x),(3,3))
+        y=np.resize(np.array(x),(3,3))
         for i in range(3):
-                j=list(set(x[:,i])) #checking vertically
-                if len(j)==1 and j[0]!=' ':
-                    if j[0]=='X': return 'player 1'
-                    else: return 'player 2'
-                j=list(set(x[i,:])) #checking horizontally
-                if len(j)==1 and j[0]!=' ':
-                    if j[0]=='X': return 'player 1'
-                    else: return 'player 2'
-        else: #checking diagonals
-            j=list(set(np.diag(x[::-1])))
-            if len(j)==1 and j[0]!=' ':
-                if j[0]=='X': return 'player 1'
-                else: return 'player 2'
-            j=list(set(np.diag(x)))
-            if len(j)==1 and j[0]!=' ':
-                if j[0]=='X': return 'player 1'
-                else: return 'player 2'
+            if "".join(y[:,i])=='XXX' or "".join(y[i,:])=='XXX': return 'player 1'
+            elif "".join(y[:,i])=='OOO' or "".join(y[i,:])=='OOO': return 'player 2'
+        if "".join(np.diag(y[::-1]))=='XXX' or "".join(np.diag(y))=='XXX': return 'player 1'
+        elif "".join(np.diag(y[::-1]))=='OOO' or "".join(np.diag(y))=='OOO': return 'player 2'
         return ''
     
     display() #displaying the board in initial
