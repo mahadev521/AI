@@ -17,41 +17,26 @@ def game(gc):
             x[1][1]='O'
             return
         if c>2:
-            for j in ('O','X'): #checking posibility for Ai to win else blocking player possibility to win
-                for i in range(3):
-                    if np.count_nonzero(x[:,i] == j)==2 and np.count_nonzero(x[:,i]==' ')==1:
-                        pos=np.where(x[:,i]==' ')[0][0]
-                        x[pos][i]='O'
+            for k in range(1,3):
+                l=2 if k==1 else 1
+                for j in ('O','X'): #checking posibility for computer to win else blocking player possibility to win
+                    for i in range(3):
+                        if np.count_nonzero(x[:,i] == j)==l and np.count_nonzero(x[:,i]==' ')==k:
+                            pos=np.where(x[:,i]==' ')[0][0]
+                            x[pos][i]='O'
+                            return 
+                        if np.count_nonzero(x[i,:] == j)==l and np.count_nonzero(x[i,:]==' ')==k:
+                            pos=np.where(x[i,:]==' ')[0][0]
+                            x[i][pos]='O'
+                            return 
+                    if np.count_nonzero(np.diag(x)==j)==l and np.count_nonzero(np.diag(x)==' ')==k:
+                        pos=np.where(np.diag(x)==' ')[0][0]
+                        x[pos][pos]='O'
                         return 
-                    if np.count_nonzero(x[i,:] == j)==2 and np.count_nonzero(x[i,:]==' ')==1:
-                        pos=np.where(x[i,:]==' ')[0][0]
-                        x[i][pos]='O'
+                    if np.count_nonzero(np.diag(x[::-1])==j)==l and np.count_nonzero(np.diag(x[::-1])==' ')==k:
+                        pos=np.where(np.diag(x[::-1])==' ')[0][0]
+                        x[2-pos][pos]='O'
                         return 
-                if np.count_nonzero(np.diag(x)==j)==2 and np.count_nonzero(np.diag(x)==' ')==1:
-                    pos=np.where(np.diag(x)==' ')[0][0]
-                    x[pos][pos]='O'
-                    return 
-                if np.count_nonzero(np.diag(x[::-1])==j)==2 and np.count_nonzero(np.diag(x[::-1])==' ')==1:
-                    pos=np.where(np.diag(x[::-1])==' ')[0][0]
-                    x[2-pos][pos]='O'
-                    return 
-        if np.count_nonzero(np.diag(x)=='X')==1 and np.count_nonzero(np.diag(x)==' ')==2:
-            pos=np.where(np.diag(x)==' ')[0][0]
-            x[pos][pos]='O'
-            return 
-        if np.count_nonzero(np.diag(x[::-1])=='X')==1 and np.count_nonzero(np.diag(x[::-1])==' ')==2:
-            pos=np.where(np.diag(x[::-1])==' ')[0][0]
-            x[2-pos][pos]='O'
-            return 
-        for i in range(3): #2 blank spaces case
-            if np.count_nonzero(x[:,i] == 'X')==1 and np.count_nonzero(x[:,i]==' ')==2:
-                pos=np.where(x[:,i]==' ')[0][0]
-                x[pos][i]='O'
-                return 
-            if np.count_nonzero(x[i,:] == 'X')==1 and np.count_nonzero(x[i,:]==' ')==2:
-                pos=np.where(x[i,:]==' ')[0][0]
-                x[i][pos]='O'
-                return
         i,j=np.argwhere(x==' ')[0]
         x[i][j]='O'
         
@@ -64,7 +49,6 @@ def game(gc):
         for i in x: print(i)
 
     display()
-    i=1
     while True:
         player() if gc%2==0 else AI()  
         c += 1
