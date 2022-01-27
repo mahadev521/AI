@@ -4,9 +4,10 @@
 # 4 9 2
 
 from itertools import combinations
-po={1:8,2:1,3:6,4:3,5:5,6:7,7:4,8:9,9:2}
-place={8:0,1:1,6:2,3:3,5:4,7:5,4:6,9:7,2:8}
-gc=0
+po={1:8,2:1,3:6,4:3,5:5,6:7,7:4,8:9,9:2} #referencing
+place={8:0,1:1,6:2,3:3,5:4,7:5,4:6,9:7,2:8} #dereferencing
+gc=0 #to determine who should play first
+
 def game(gc):
     x,c,p,a=[' ']*9,0,[],[]
 
@@ -29,7 +30,6 @@ def game(gc):
             return
         if c>2:
             for i in combinations(a,2):
-                print(i)
                 tem=15-(po[i[0]]+po[i[1]])
                 if 10>tem>0 and x[place[tem]]==' ':
                     x[place[tem]]='O'
@@ -37,7 +37,6 @@ def game(gc):
                     return
             else:
                 for i in combinations(p,2):
-                    print(i)
                     tem=15-(po[i[0]]+po[i[1]])
                     if 10>tem>0 and x[place[tem]]==' ':
                         x[place[tem]]='O'
