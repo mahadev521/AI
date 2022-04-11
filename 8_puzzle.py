@@ -1,9 +1,9 @@
-
 class Puzzle:
-    def __init__(self,puz):
-        self.puz = puz
-        self.par=None
-        self.h=0
+    def __init__(self,puz,par=None,h=0,g=0):
+        self.puz = puz #puzzle matrix
+        self.par=par #for parent
+        self.h=h #f(x)
+        self.g=g #g(x)
     def __eq__(self,other):
         return self.puz==other.puz
     def __hash__(self):
@@ -13,46 +13,32 @@ class Puzzle:
     def isgoal(self,goal):
         return self.puz==goal
 
-def heur(mat,goal):
+def heur(mat,goal): #function to find heuristic
     return sum([1 for i in range(row*col) if mat[i]!=goal[i]])
 
 def sucessors(state):
     mat=state.puz
-    ind=mat.index('_')
-    total=row*col
+    ind=mat.index('0')
     children=[]
-    if (ind+1)%col!=0:
+    if (ind+1)%col!=0: #moving right
         newmat=mat.copy()
         newmat[ind],newmat[ind+1]=newmat[ind+1],newmat[ind]
-        newstate=Puzzle(newmat)
-        newstate.par=state
-        newstate.h=heur(newmat,goal)+state.h
-        children.append(newstate)
-    if (ind+1)%col!=1:
+        children.append(Puzzle(newmat,state,heur(newmat,goal)+state.h,state.g+1))
+    if (ind+1)%col!=1: #moving left
         newmat=mat.copy()
         newmat[ind],newmat[ind-1]=newmat[ind-1],newmat[ind]
-        newstate=Puzzle(newmat)
-        newstate.par=state
-        newstate.h=heur(newmat,goal)+state.h
-        children.append(newstate)
-    if ind+col<=total-1:
+        children.append(Puzzle(newmat,state,heur(newmat,goal)+state.h,state.g+1))
+    if ind+col<=(row*col)-1: #movind down
         newmat=mat.copy()
         newmat[ind],newmat[ind+col]=newmat[ind+col],newmat[ind]
-        newstate=Puzzle(newmat)
-        newstate.par=state
-        newstate.h=heur(newmat,goal)+state.h
-        children.append(newstate)
-    if ind-col>=0:
+        children.append(Puzzle(newmat,state,heur(newmat,goal)+state.h,state.g+1))
+    if ind-col>=0: #moving up
         newmat=mat.copy()
         newmat[ind],newmat[ind-col]=newmat[ind-col],newmat[ind]
-        newstate=Puzzle(newmat)
-        newstate.par=state
-        newstate.h=heur(newmat,goal)+state.h
-        children.append(newstate)
+        children.append(Puzzle(newmat,state,heur(newmat,goal)+state.h,state.g+1))
     return children
 
-
-def bestfirstsearch(mat,goal):
+def Astar(mat,goal):
     recordx=Puzzle(mat)
     if recordx.isgoal(goal): return recordx
     openlist=[recordx] #openlist is a list of states
@@ -65,7 +51,7 @@ def bestfirstsearch(mat,goal):
         for i in children:
             if i not in closed: 
                 openlist.append(i)
-        openlist.sort(key=lambda y:y.h)
+        openlist.sort(key=lambda y:y.h+y.g)
     return None
         
 def display(solution,row,col):
@@ -80,13 +66,15 @@ def display(solution,row,col):
     else:
         print(f'there is no solution for this puzzle')
 
-
 if __name__ == '__main__':
-    mat=['_','8','1','7','2','3','6','4','5']
-    # mat=['1','2','5','4','3','6','7','8','_'] #no sol
-    # mat=['1','2','3','8','_','4','7','6','5'] #puzzle with no solution
-    goal=['1','2','3','4','5','6','7','8','_']
-    # mat=['4','1','3','_','2','5','7','8','6',]
+    mat=[]
+    for i in range(9):
+        mat.append(input(f'enter {i+1}th pos: '))
+    # mat=['0','8','1','7','2','3','6','4','5']
+    # mat=['1','2','5','4','3','6','7','8','0'] #no sol
+    # mat=['1','2','3','8','0','4','7','6','5'] #puzzle with no solution
+    goal=['1','2','3','4','5','6','7','8','0']
+    # mat=['4','1','3','0','2','5','7','8','6',]
     row=3
     col=3
-    display(bestfirstsearch(mat,goal),row,col)
+    display(Astar(mat,goal),row,col)
