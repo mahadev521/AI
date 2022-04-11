@@ -53,7 +53,66 @@ def Astar(mat,goal):
                 openlist.append(i)
         openlist.sort(key=lambda y:y.h+y.g)
     return None
-        
+
+def bandb(mat,goal):
+    recordx=Puzzle(mat)
+    if recordx.isgoal(goal):return recordx
+    openlist=[recordx]
+    closed=set()
+    while openlist:
+        state = openlist.pop(0)
+        if state.isgoal(goal): return state
+        closed.add(state)
+        children = sucessors(state)
+        for i in children:
+            if i not in closed: 
+                openlist.append(i)
+        openlist.sort(key=lambda y:y.g)
+    return None
+
+def hill(mat,goal):
+    recordx=Puzzle(mat)
+    if recordx.isgoal(goal):return recordx
+    openlist=[recordx]
+    closed=set()
+    while openlist:
+        state = openlist.pop(0)
+        if state.isgoal(goal): return state
+        closed.add(state)
+        children = sucessors(state)
+        temp=[]
+        for i in children:
+            if i not in closed: 
+                temp.append(i)
+        temp.sort(key=lambda y:y.h)
+        openlist=temp+openlist
+    return None
+
+def beam(mat,goal,width):
+    recordx=Puzzle(mat)
+    if recordx.isgoal(goal):return recordx
+    openlist=[recordx]
+    wopen=openlist[:width]
+    openlist.clear()
+    closed=set()
+    while wopen:
+        for i in range(width):
+            try:
+                state = wopen.pop(0)
+                if state.isgoal(goal): return state
+                closed.add(state)
+                children = sucessors(state)
+                for i in children:
+                    if i not in closed: 
+                        openlist.append(i)
+                openlist.sort(key=lambda y:y.h)
+            except:
+                break
+        wopen=openlist[:width]
+        openlist.clear()
+    return None
+
+
 def display(solution,row,col):
     if solution:
         path = [solution.display(row,col)]
@@ -63,8 +122,7 @@ def display(solution,row,col):
             par = par.par
         for i in path[::-1]: 
             print(f'{i}\n')
-    else:
-        print(f'there is no solution for this puzzle')
+    else: print(f'there is no solution for this puzzle')
 
 if __name__ == '__main__':
     mat=[]
@@ -77,4 +135,11 @@ if __name__ == '__main__':
     # mat=['4','1','3','0','2','5','7','8','6',]
     row=3
     col=3
+    print('astar algorithm')
     display(Astar(mat,goal),row,col)
+    print('branch and bound algorithm')
+    display(bandb(mat,goal),row,col)
+    print('hill climbing algorithm')
+    display(hill(mat,goal),row,col)
+    print('beam search algorithm')
+    display(beam(mat,goal,2),row,col)
