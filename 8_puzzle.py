@@ -8,7 +8,7 @@ class Puzzle:
         return self.puz==other.puz
     def __hash__(self):
         return hash((str(self.puz)))
-    def display(self,row,col):
+    def __str__(self):
         return '\n'.join([' '.join(self.puz[i:i+col]) for i in range(0,row*col,col)])
     def isgoal(self,goal):
         return self.puz==goal
@@ -23,25 +23,23 @@ def sucessors(state):
     if (ind+1)%col!=0: #moving right
         newmat=mat.copy()
         newmat[ind],newmat[ind+1]=newmat[ind+1],newmat[ind]
-        children.append(Puzzle(newmat,state,heur(newmat,goal)+state.h,state.g+1))
+        children.append(Puzzle(newmat,state,heur(newmat,goal),state.g+1))
     if (ind+1)%col!=1: #moving left
         newmat=mat.copy()
         newmat[ind],newmat[ind-1]=newmat[ind-1],newmat[ind]
-        children.append(Puzzle(newmat,state,heur(newmat,goal)+state.h,state.g+1))
+        children.append(Puzzle(newmat,state,heur(newmat,goal),state.g+1))
     if ind+col<=(row*col)-1: #movind down
         newmat=mat.copy()
         newmat[ind],newmat[ind+col]=newmat[ind+col],newmat[ind]
-        children.append(Puzzle(newmat,state,heur(newmat,goal)+state.h,state.g+1))
+        children.append(Puzzle(newmat,state,heur(newmat,goal),state.g+1))
     if ind-col>=0: #moving up
         newmat=mat.copy()
         newmat[ind],newmat[ind-col]=newmat[ind-col],newmat[ind]
-        children.append(Puzzle(newmat,state,heur(newmat,goal)+state.h,state.g+1))
+        children.append(Puzzle(newmat,state,heur(newmat,goal),state.g+1))
     return children
 
 def Astar(mat,goal):
-    recordx=Puzzle(mat)
-    if recordx.isgoal(goal): return recordx
-    openlist=[recordx] #openlist is a list of states
+    openlist=[Puzzle(mat)] #openlist is a list of states
     closed=set()
     while openlist:
         state = openlist.pop(0)
@@ -49,15 +47,12 @@ def Astar(mat,goal):
         closed.add(state)
         children = sucessors(state)
         for i in children:
-            if i not in closed: 
-                openlist.append(i)
+            if i not in closed: openlist.append(i)
         openlist.sort(key=lambda y:y.h+y.g)
     return None
 
 def bandb(mat,goal):
-    recordx=Puzzle(mat)
-    if recordx.isgoal(goal):return recordx
-    openlist=[recordx]
+    openlist=[Puzzle(mat)] #openlist is a list of states
     closed=set()
     while openlist:
         state = openlist.pop(0)
@@ -65,15 +60,12 @@ def bandb(mat,goal):
         closed.add(state)
         children = sucessors(state)
         for i in children:
-            if i not in closed: 
-                openlist.append(i)
+            if i not in closed: openlist.append(i)
         openlist.sort(key=lambda y:y.g)
     return None
 
 def hill(mat,goal):
-    recordx=Puzzle(mat)
-    if recordx.isgoal(goal):return recordx
-    openlist=[recordx]
+    openlist=[Puzzle(mat)] #openlist is a list of states
     closed=set()
     while openlist:
         state = openlist.pop(0)
@@ -82,19 +74,16 @@ def hill(mat,goal):
         children = sucessors(state)
         temp=[]
         for i in children:
-            if i not in closed: 
-                temp.append(i)
+            if i not in closed: temp.append(i)
         temp.sort(key=lambda y:y.h)
         openlist=temp+openlist
     return None
 
 def beam(mat,goal,width):
-    recordx=Puzzle(mat)
-    if recordx.isgoal(goal):return recordx
-    openlist=[recordx]
+    openlist=[Puzzle(mat)] #openlist is a list of states
+    closed=set()
     wopen=openlist[:width]
     openlist.clear()
-    closed=set()
     while wopen:
         for i in range(width):
             try:
@@ -103,43 +92,61 @@ def beam(mat,goal,width):
                 closed.add(state)
                 children = sucessors(state)
                 for i in children:
-                    if i not in closed: 
-                        openlist.append(i)
+                    if i not in closed: openlist.append(i)
                 openlist.sort(key=lambda y:y.h)
-            except:
-                break
+            except: break
         wopen=openlist[:width]
         openlist.clear()
     return None
 
+def bestfirst(mat,goal):
+    openlist=[Puzzle(mat)] #openlist is a list of states
+    closed=set()
+    while openlist:
+        state = openlist.pop(0)
+        if state.isgoal(goal): return state
+        closed.add(state)
+        children = sucessors(state)
+        for i in children:
+            if i not in closed: openlist.append(i)
+        openlist.sort(key=lambda y:y.h)
+    return None
 
 def display(solution,row,col):
     if solution:
-        path = [solution.display(row,col)]
+        path = [solution]
         par = solution.par #for parent tracking
         while par:
-            path.append(par.display(row,col))
+            path.append(par)
             par = par.par
-        for i in path[::-1]: 
-            print(f'{i}\n')
+        for i in path[::-1]: print(f'{i}\n')
     else: print(f'there is no solution for this puzzle')
 
-if __name__ == '__main__':
-    mat=[]
-    for i in range(9):
-        mat.append(input(f'enter {i+1}th pos: '))
+if __name__ == '__main__':   
+    mat=[input(f'enter {i+1}th pos: ') for i in range(9)]
     # mat=['0','8','1','7','2','3','6','4','5']
     # mat=['1','2','5','4','3','6','7','8','0'] #no sol
     # mat=['1','2','3','8','0','4','7','6','5'] #puzzle with no solution
     goal=['1','2','3','4','5','6','7','8','0']
-    # mat=['4','1','3','0','2','5','7','8','6',]
+#     mat=['4','1','3','0','2','5','7','8','6',]
+    # mat=['1','5','3','2','8','4','6','0','7']
     row=3
     col=3
-    print('astar algorithm')
-    display(Astar(mat,goal),row,col)
-    print('branch and bound algorithm')
-    display(bandb(mat,goal),row,col)
-    print('hill climbing algorithm')
-    display(hill(mat,goal),row,col)
-    print('beam search algorithm')
-    display(beam(mat,goal,2),row,col)
+    print('1.Astar\n2.Branch and bound\n3.Hill climbing\n4.Beam search\n5.Bestfirst')
+    ch=int(input('enter your choice: '))
+    if ch==1:
+        print('astar algorithm')
+        display(Astar(mat,goal),row,col)
+    elif ch==2:
+        print('branch and bound algorithm')
+        display(bandb(mat,goal),row,col)
+    elif ch==3:
+        print('hill climbing algorithm')
+        display(hill(mat,goal),row,col)
+    elif ch==4:
+        print('beam search algorithm')
+        wid=int(input('enter beam width: '))
+        display(beam(mat,goal,wid),row,col)
+    else:
+        print('bestfirst algorithm')
+        display(bestfirst(mat,goal),row,col)
